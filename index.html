@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>Box World</title>
+        <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="js/bw.js"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+			<p id="menu">
+				<a id="newGame" href="#">New game</a>
+				<a id="restart" href="#">Restart (F2)</a>
+				<a id="undo" href="#">Undo (Ctrl+Z)</a>
+			</p>
+            <canvas id="boxWorldScreen" width="760" height="600">
+                <img id="boxWorldTiles" src="img/tiles.png" alt="tiles" />
+            </canvas>
+			<p id="stats">
+				Level: <b id="levelId"></b>,
+				Boxes in place: <b id="boxesInPlace"></b> from <b id="boxCount"></b>,
+				Moves: <b id="moves"></b>
+			</p>
+        </div>
+        <script>
+			BoxWorld.victory = function() {
+				this.game.status = false;
+				
+				setTimeout(function() {
+					alert('You are awesome! :3 All levels completed.');
+					BoxWorld.loadLevel(0);
+					BoxWorld.game.status = true;
+				}, 1000);
+			}
+		
+			BoxWorld.afterRedraw = function() {
+				document.getElementById('levelId').innerHTML = BoxWorld.level.id + 1;
+				document.getElementById('boxesInPlace').innerHTML = BoxWorld.level.boxesInPlace;
+				document.getElementById('boxCount').innerHTML = BoxWorld.level.boxCount;
+				document.getElementById('moves').innerHTML = BoxWorld.level.moves;
+				
+				document.getElementById('undo').style.display = BoxWorld.level.undoData.length == 0 ? 'none' : 'inline';
+			}
+			
+			document.getElementById('newGame').onclick = function(e) {
+				e.preventDefault();
+				BoxWorld.loadLevel(0);
+			};
+			
+			document.getElementById('restart').onclick = function(e) {
+				e.preventDefault();
+				BoxWorld.loadLevel(BoxWorld.level.id);
+			};
+			
+			document.getElementById('undo').onclick = function(e) {
+				e.preventDefault();
+				BoxWorld.undo();
+			};
+
+			window.addEventListener('load', function() {
+				BoxWorld.init();
+			});
+        </script>
+    </body>
+</html>
